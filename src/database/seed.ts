@@ -243,7 +243,8 @@ async function bootstrap() {
     await eventsService.create(
       {
         name: 'Circuito de Jazz - Primavera',
-        description: 'Serie de 4 conciertos de jazz en diferentes locales de Lima',
+        description:
+          'Serie de 4 conciertos de jazz en diferentes locales de Lima',
         date: new Date('2025-04-01'),
         location: 'Varios locales',
         genre: 'Jazz',
