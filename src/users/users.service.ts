@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,6 +35,35 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return updatedUser;
+  }
+
+  async updateProfile(
+    userId: number,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<User> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Actualizar solo los campos permitidos
+    if (updateProfileDto.name !== undefined) {
+      user.name = updateProfileDto.name;
+    }
+    if (updateProfileDto.bio !== undefined) {
+      user.bio = updateProfileDto.bio;
+    }
+    if (updateProfileDto.phone !== undefined) {
+      user.phone = updateProfileDto.phone;
+    }
+
+    const updatedUser = await this.userRepository.save(user);
+
+    // No devolver la contraseña
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = updatedUser;
+
+    return userWithoutPassword as User;
   }
 
   async remove(id: number): Promise<void> {
